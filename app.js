@@ -23,7 +23,7 @@ const io = require("socket.io").listen(server);
 // Models for socket responses
 const Auction = require('./src/models/auction');
 
-// DB CONNECTION (replace with process.env.DATABASE for localstorage)
+// DB CONNECTION (replace with process.env.DB_LOCAL for localstorage)
 // @TODO: usuario y pass de DB deberian ser variables de entorno en heroku
 mongoose
   .connect(process.env.DB_CONNECTION, {
@@ -60,5 +60,5 @@ io.on("connection", (socket) => {
     console.log('stock update', auction);
     io.emit("stock update", auction);
   });
-  socket.on('disconnect', (socket) => console.log("User disconnected", socket.id));
+  socket.on('disconnect', () => console.log("User disconnected"));
 });
