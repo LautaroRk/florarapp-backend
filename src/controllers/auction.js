@@ -5,6 +5,8 @@ const Auction = require("../models/auction");
 const Sale = require("../models/sale");
 const { errorHandler } = require("../helpers/dbErrorHandler");
 const { formatForNode } = require("../helpers/dates");
+const io = require('../helpers/socket.js').getio();
+const schedule = require('node-schedule');
 
 exports.auctionById = (req, res, next, id) => {
 
@@ -131,6 +133,12 @@ exports.create = (req, res) => {
       });
     }
 
+    schedule.scheduleJob(new Date(start_date), function() {
+      console.log("AUCTION STARTED:", auction._id, start_date);
+      io.emit("auction started");
+      // @TODO: update job when auction updated
+    });
+
     res.json({ data });
   });
 };
@@ -155,6 +163,7 @@ exports.update = (req, res) => {
         },
       });
     }
+
     res.json(data);
   });
 };

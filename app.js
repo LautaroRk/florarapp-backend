@@ -8,25 +8,26 @@ const expressValidator = require("express-validator");
 
 require("dotenv").config();
 
-// import routes
-const authRoutes = require("./src/routes/auth");
-const userRoutes = require("./src/routes/user");
-const productRoutes = require("./src/routes/EXAMPLEproduct");
-const auctionRoutes = require("./src/routes/auction");
-
 // app
 const app = express();
 // server
 const server = require("http").createServer(app);
-const io = require("socket.io").listen(server);
+const io = require('./src/helpers/socket.js').init(server);
+
+
+// import routes
+const authRoutes = require("./src/routes/auth");
+const userRoutes = require("./src/routes/user");
+const auctionRoutes = require("./src/routes/auction");
+//const productRoutes = require("./src/routes/EXAMPLEproduct");
 
 // Models for socket responses
 const Auction = require('./src/models/auction');
 
-// DB CONNECTION (replace with process.env.DB_LOCAL for localstorage)
+// DB_CONNECTION (replace with process.env.DB_LOCAL for localstorage)
 // @TODO: usuario y pass de DB deberian ser variables de entorno en heroku
 mongoose
-  .connect(process.env.DB_CONNECTION, {
+  .connect(process.env.DB_LOCAL, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
@@ -44,8 +45,8 @@ app.use(cors());
 // routes middleware
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
-app.use("/api", productRoutes);
 app.use("/api", auctionRoutes);
+//app.use("/api", productRoutes);
 
 const port = process.env.PORT || 8000;
 
